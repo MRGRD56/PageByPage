@@ -1,0 +1,81 @@
+﻿<Window x:Class="PageByPage.Views.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PageByPage.Views.Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:windowsViewModels="clr-namespace:PageByPage.ViewModels.WindowsViewModels"
+        mc:Ignorable="d"
+        Title="PageByPage" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource MaterialWindow}">
+    <Window.DataContext>
+        <windowsViewModels:MainWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBox
+                materialDesign:HintAssist.Hint="Select file to print"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                VerticalAlignment="Center" 
+                Width="350"
+                Padding="0 4 52 4"
+                materialDesign:HintAssist.HelperText="{Binding FilePickerHelperText}">
+                <TextBox.Text>
+                    <Binding Path="FilePath" 
+                             UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <DataErrorValidationRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                    Content="{materialDesign:PackIcon FolderOpen}" 
+                    Margin="-50 0 0 0"
+                    Command="{Binding PickFileCommand}"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0 16 0 0"
+              Visibility="{Binding IsFileSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBox Style="{StaticResource MaterialDesignFilledTextBox}"
+                                 MaxWidth="400"
+                                 materialDesign:HintAssist.Hint="Page"
+                                 Width="100"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon ArrowLeft}"
+                                Margin="10 0 5 0"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon ArrowRight}"/>
+
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0 10">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Content="Print Current"/>
+                        <Button Style="{StaticResource MaterialDesignFlatButton}"
+                                Content="Print Next"
+                                Margin="5 0 0 0"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Center">
+                        <ComboBox ItemsSource="{Binding Printers}"
+                                  SelectedItem="{Binding PrinterName}"
+                                  Width="200"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <GridSplitter Grid.Column="1" Width="3" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
+            <Border Grid.Column="2" Background="Yellow"/>
+        </Grid>
+    </Grid>
+</Window>
