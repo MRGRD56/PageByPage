@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PageByPage.Views.Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:windowsViewModels="clr-namespace:PageByPage.ViewModels.WindowsViewModels"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
         Title="PageByPage" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
@@ -43,7 +44,7 @@
         <Grid Grid.Row="1" Margin="0 16 0 0"
               Visibility="{Binding IsFileSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" MinWidth="200"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -53,21 +54,36 @@
                         <TextBox Style="{StaticResource MaterialDesignFilledTextBox}"
                                  MaxWidth="400"
                                  materialDesign:HintAssist.Hint="Page"
-                                 Width="100"/>
+                                 Width="100">
+                            <TextBox.Text>
+                                <Binding Path="CurrentPage" 
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <DataErrorValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                         <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon ArrowLeft}"
-                                Margin="10 0 5 0"/>
-                        <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon ArrowRight}"/>
+                                Margin="10 0 5 0"
+                                Command="{Binding PreviousPageCommand}"/>
+                        <Button Style="{StaticResource MaterialDesignIconButton}" Content="{materialDesign:PackIcon ArrowRight}"
+                                Command="{Binding NextPageCommand}"/>
 
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Margin="0 10">
                         <Button Style="{StaticResource MaterialDesignFlatButton}"
-                                Content="Print Current"/>
+                                Content="Print Current"
+                                Command="{Binding PrintCurrentPageCommand}"/>
                         <Button Style="{StaticResource MaterialDesignFlatButton}"
                                 Content="Print Next"
-                                Margin="5 0 0 0"/>
+                                Margin="5 0 0 0"
+                                Command="{Binding PrintNextPageCommand}"/>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Printer" Height="20" Width="20" VerticalAlignment="Center" Margin="0 0 5 0"
+                                                 Foreground="#1e88e5"/>
                         <ComboBox ItemsSource="{Binding Printers}"
                                   SelectedItem="{Binding PrinterName}"
                                   Width="200"/>
@@ -75,7 +91,18 @@
                 </StackPanel>
             </Grid>
             <GridSplitter Grid.Column="1" Width="3" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
-            <Border Grid.Column="2" Background="Yellow"/>
+            <Border Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    BorderBrush="Black" BorderThickness="0" Margin="3">
+                <Border.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <hc:Theme Name="HandyTheme"/>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </Border.Resources>
+                <hc:ImageViewer ImageSource="{Binding CurrentPageImageSource}"
+                                UseLayoutRounding="True"/>
+            </Border>
         </Grid>
     </Grid>
 </Window>
