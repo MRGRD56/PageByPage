@@ -42,7 +42,6 @@ namespace PageByPage.ViewModels.WindowsViewModels
         private int _currentPage;
         private PdfDocument _currentPdfDocument;
         private BitmapFrame _currentPageImageSource = BitmapFrame.Create(new Bitmap(3508, 2480).ToBitmapSource());
-        private string Settings;
 
         public string FilePath
         {
